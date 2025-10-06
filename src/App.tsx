@@ -22,6 +22,7 @@ type Scene = {
   messages: SceneMessage[];
 };
 
+
 type SceneMessage = {
   from?: string;
   textId?: string;
@@ -233,13 +234,17 @@ export default function App() {
     }
 
     if (message.sys === "addContact") {
+
     if (message.sys === "status" || message.sys === "addContact") {
+
       appendMessage({
         key,
         type: "status",
         textId: message.textId,
         content: `+ ${message.who ?? ""}`,
+
         content: message.sys === "addContact" ? `+ ${message.who ?? ""}` : undefined,
+
         anim: message.anim?.name
       });
       queueNext(250);
@@ -269,7 +274,10 @@ export default function App() {
       });
     } else if (message.textId && message.textId !== "ui.title") {
 
+
+
     } else if (message.textId) {
+
       appendMessage({
         key,
         type: "status",
@@ -284,8 +292,9 @@ export default function App() {
 
       setActiveChoices(message.choices as ChoiceNode[]);
 
-      setChoices(message.choices as ChoiceNode[]);
+      setActiveChoices(message.choices as ChoiceNode[]);
 
+      setChoices(message.choices as ChoiceNode[]);
 
       return;
     }
@@ -306,8 +315,6 @@ export default function App() {
       setActiveChoices(null);
       setActiveChoices(null);
       setChoices([]);
-
-
       appendMessage({
         key: `${sceneId}-choice-${choice.id}-${Date.now()}`,
         type: "bubble",
@@ -435,7 +442,6 @@ export default function App() {
           {typing && <Typing text={`${typing.who ? typing.who + " " : ""}${t("ui.typing")}`} />}
           {choices.length > 0 && <Choices items={choices} onPick={onPick} label={label} />}
         </main>
-
       </div>
       <Sidebar sceneId={sceneId} />
     </div>
