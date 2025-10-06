@@ -1,0 +1,294 @@
+[
+  {
+    "id": "ch1.splash",
+    "participants": ["System"],
+    "messages": [
+      {
+        "sys": "status",
+        "textId": "ui.title",
+        "anim": { "name": "fadeIn", "durationMs": 600 },
+        "sfx": { "on": "checkpoint", "vol": 0.8 }
+      },
+      {
+        "from": "System",
+        "textId": "ch1.splash_prompt",
+        "anim": { "name": "fadeIn", "durationMs": 320 },
+        "sfx": { "on": "message_in", "vol": 0.6 }
+      },
+      {
+        "from": "System",
+        "choices": [
+          { "id": "lang_uk", "labelId": "ui.lang.uk", "goto": "ch1.langset.uk" },
+          { "id": "lang_ru", "labelId": "ui.lang.ru", "goto": "ch1.langset.ru" }
+        ],
+        "anim": { "name": "pulse", "durationMs": 280 },
+        "sfx": { "on": "choice_show", "vol": 0.7 }
+      }
+    ]
+  },
+  {
+    "id": "ch1.langset.uk",
+    "participants": ["System"],
+    "messages": [
+      {
+        "sys": "status",
+        "textId": "ui.lang.set.uk",
+        "anim": { "name": "pulse", "durationMs": 320 },
+        "sfx": { "on": "checkpoint", "vol": 0.8 },
+        "effects": { "lang": "uk" }
+      },
+      {
+        "from": "System",
+        "textId": "ch1.tutorial_hint",
+        "anim": { "name": "fadeIn", "durationMs": 300 },
+        "sfx": { "on": "message_in", "vol": 0.7 }
+      },
+      {
+        "from": "System",
+        "choices": [
+          { "id": "start", "labelId": "ui.start", "goto": "ch1.tutorial" }
+        ],
+        "anim": { "name": "pulse", "durationMs": 260 },
+        "sfx": { "on": "choice_show", "vol": 0.7 }
+      }
+    ]
+  },
+  {
+    "id": "ch1.langset.ru",
+    "participants": ["System"],
+    "messages": [
+      {
+        "sys": "status",
+        "textId": "ui.lang.set.ru",
+        "anim": { "name": "pulse", "durationMs": 320 },
+        "sfx": { "on": "checkpoint", "vol": 0.8 },
+        "effects": { "lang": "ru" }
+      },
+      {
+        "from": "System",
+        "textId": "ch1.tutorial_hint",
+        "anim": { "name": "fadeIn", "durationMs": 300 },
+        "sfx": { "on": "message_in", "vol": 0.7 }
+      },
+      {
+        "from": "System",
+        "choices": [
+          { "id": "start", "labelId": "ui.start", "goto": "ch1.tutorial" }
+        ],
+        "anim": { "name": "pulse", "durationMs": 260 },
+        "sfx": { "on": "choice_show", "vol": 0.7 }
+      }
+    ]
+  },
+  {
+    "id": "ch1.tutorial",
+    "participants": ["System"],
+    "messages": [
+      {
+        "from": "System",
+        "textId": "ch1.tutorial_step",
+        "anim": { "name": "fadeIn", "durationMs": 320 },
+        "sfx": { "on": "message_in" }
+      },
+      {
+        "from": "System",
+        "textId": "ch1.tutorial_vibe",
+        "anim": { "name": "fadeIn", "durationMs": 320 },
+        "sfx": { "on": "message_in", "vol": 0.7 }
+      },
+      {
+        "from": "System",
+        "choices": [
+          { "id": "go", "labelId": "ui.continue", "goto": "ch1.firstping" }
+        ],
+        "anim": { "name": "pulse", "durationMs": 260 },
+        "sfx": { "on": "choice_show", "vol": 0.7 }
+      }
+    ]
+  },
+  {
+    "id": "ch1.firstping",
+    "participants": ["Alex", "Sam"],
+    "messages": [
+      {
+        "sys": "typing",
+        "who": "Sam",
+        "ms": 1200,
+        "sfx": { "on": "typing_start", "vol": 0.6 },
+        "anim": { "name": "pulse", "durationMs": 1200 },
+        "haptics": "light"
+      },
+      {
+        "from": "Sam",
+        "textId": "ch1.sam_1",
+        "sfx": { "on": "message_in", "vol": 0.9 },
+        "anim": { "name": "fadeIn", "durationMs": 260 }
+      },
+      {
+        "from": "Sam",
+        "textId": "ch1.sam_2",
+        "sfx": { "on": "message_in", "vol": 0.85 },
+        "anim": { "name": "fadeIn", "durationMs": 240 }
+      },
+      {
+        "from": "Sam",
+        "textId": "ch1.sam_breathe",
+        "sfx": { "on": "message_in", "vol": 0.75 },
+        "anim": { "name": "fadeIn", "durationMs": 220 }
+      },
+      {
+        "from": "Alex",
+        "choices": [
+          { "id": "askWho", "labelId": "ch1.choice.askWho", "goto": "ch1.deleted", "effects": { "trust.Sam": 1 } },
+          { "id": "details", "labelId": "ch1.choice.details", "goto": "ch1.deleted" },
+          { "id": "when", "labelId": "ch1.choice.when", "goto": "ch1.deleted" }
+        ],
+        "anim": { "name": "pulse", "durationMs": 280 },
+        "sfx": { "on": "choice_show", "vol": 0.7 }
+      }
+    ]
+  },
+  {
+    "id": "ch1.deleted",
+    "participants": ["Alex", "Sam"],
+    "messages": [
+      {
+        "sys": "typing",
+        "who": "Sam",
+        "ms": 900,
+        "sfx": { "on": "typing_start", "vol": 0.6 },
+        "anim": { "name": "pulse", "durationMs": 900 }
+      },
+      {
+        "sys": "deleted",
+        "who": "Sam",
+        "textId": "ch1.deleted_hint",
+        "sfx": { "on": "deleted", "vol": 0.9 },
+        "anim": { "name": "deleteFlash", "durationMs": 320 },
+        "haptics": "medium",
+        "effects": { "flags.seenDeleted": true, "collected.evidence+": "sam_clip_partial" }
+      },
+      {
+        "from": "Sam",
+        "textId": "ch1.sam_deleted_clip",
+        "sfx": { "on": "message_in", "vol": 0.85 },
+        "anim": { "name": "fadeIn", "durationMs": 240 }
+      },
+      {
+        "from": "System",
+        "textId": "ch1.partial_caption",
+        "sfx": { "on": "message_in", "vol": 0.6 },
+        "anim": { "name": "fadeIn", "durationMs": 200 }
+      },
+      {
+        "from": "Sam",
+        "textId": "ch1.mira_name",
+        "sfx": { "on": "message_in", "vol": 0.8 },
+        "anim": { "name": "fadeIn", "durationMs": 260 }
+      },
+      {
+        "from": "Alex",
+        "choices": [
+          { "id": "askMira", "labelId": "ch1.choice.askMira", "goto": "ch1.bridge", "effects": { "trust.Sam": 2 } },
+          { "id": "more", "labelId": "ch1.choice.more", "goto": "ch1.bridge" }
+        ],
+        "anim": { "name": "pulse", "durationMs": 280 },
+        "sfx": { "on": "choice_show", "vol": 0.7 }
+      }
+    ]
+  },
+  {
+    "id": "ch1.bridge",
+    "participants": ["Alex", "Sam"],
+    "messages": [
+      {
+        "sys": "typing",
+        "who": "Sam",
+        "ms": 800,
+        "sfx": { "on": "typing_start", "vol": 0.6 },
+        "anim": { "name": "pulse", "durationMs": 800 }
+      },
+      {
+        "from": "Sam",
+        "textId": "ch1.mira_name_short",
+        "sfx": { "on": "message_in", "vol": 0.85 },
+        "anim": { "name": "fadeIn", "durationMs": 240 }
+      },
+      {
+        "from": "System",
+        "textId": "ch1.status_to_mira",
+        "sfx": { "on": "checkpoint", "vol": 0.9 },
+        "anim": { "name": "pulse", "durationMs": 260 },
+        "effects": { "time.clock": "+1" }
+      },
+      {
+        "from": "System",
+        "textId": "ch1.intro_mira",
+        "sfx": { "on": "message_in", "vol": 0.7 },
+        "anim": { "name": "fadeIn", "durationMs": 220 }
+      },
+      {
+        "from": "Alex",
+        "choices": [
+          { "id": "toMira", "labelId": "ch1.choice.toMira", "goto": "ch1.miraintro" }
+        ],
+        "anim": { "name": "pulse", "durationMs": 260 },
+        "sfx": { "on": "choice_show", "vol": 0.7 }
+      }
+    ]
+  },
+  {
+    "id": "ch1.miraintro",
+    "participants": ["Alex", "Mira", "Sam"],
+    "messages": [
+      {
+        "sys": "addContact",
+        "who": "Mira",
+        "sfx": { "on": "checkpoint", "vol": 0.9 },
+        "anim": { "name": "pulse", "durationMs": 320 },
+        "haptics": "light"
+      },
+      {
+        "sys": "typing",
+        "who": "Mira",
+        "ms": 1500,
+        "sfx": { "on": "typing_start", "vol": 0.7 },
+        "anim": { "name": "pulse", "durationMs": 1500 }
+      },
+      {
+        "from": "Mira",
+        "textId": "ch1.mira_skeptic",
+        "sfx": { "on": "message_in", "vol": 0.85 },
+        "anim": { "name": "fadeIn", "durationMs": 260 }
+      },
+      {
+        "sys": "typing",
+        "who": "Mira",
+        "ms": 900,
+        "sfx": { "on": "typing_start", "vol": 0.6 },
+        "anim": { "name": "pulse", "durationMs": 900 }
+      },
+      {
+        "from": "Mira",
+        "textId": "ch1.mira_intro_1",
+        "sfx": { "on": "message_in", "vol": 0.85 },
+        "anim": { "name": "fadeIn", "durationMs": 260 }
+      },
+      {
+        "from": "Mira",
+        "textId": "ch1.mira_intro_2",
+        "sfx": { "on": "message_in", "vol": 0.8 },
+        "anim": { "name": "fadeIn", "durationMs": 240 }
+      },
+      {
+        "from": "Alex",
+        "choices": [
+          { "id": "soft", "labelId": "ch1.choice.soft", "goto": "ch2.entry", "effects": { "trust.Mira": 2, "flags.hasKey": false } },
+          { "id": "hard", "labelId": "ch1.choice.hard", "goto": "ch2.entry", "effects": { "trust.Mira": -2, "flags.hasKey": false } }
+        ],
+        "anim": { "name": "pulse", "durationMs": 280 },
+        "sfx": { "on": "choice_show", "vol": 0.7 }
+      }
+    ]
+  }
+]
