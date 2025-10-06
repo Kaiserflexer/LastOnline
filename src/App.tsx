@@ -3,6 +3,11 @@ import Bubble from "@/components/Bubble";
 import Choices, { ChoiceNode } from "@/components/Choices";
 import Typing from "@/components/Typing";
 import Sidebar from "@/components/Sidebar";
+import SystemMsg from "@/components/SystemMsg";
+import { applyEffects, handleAV, t } from "@/utils/parser";
+import { useGame } from "@/store/state";
+import { playSfx } from "@/utils/sfx";
+
 import { applyEffects, handleAV, t } from "@/utils/parser";
 import { useGame } from "@/store/state";
 import ch1 from "@/scenes/ch1_intro.json";
@@ -34,6 +39,34 @@ type SceneMessage = {
   haptics?: "light" | "medium" | "heavy";
 };
 
+
+type Scene = {
+  id: string;
+  participants: string[];
+  messages: SceneMessage[];
+};
+
+const srcModules = import.meta.glob<Scene[] | Scene>("./scenes/**/*.json", {
+  eager: true,
+  import: "default"
+});
+const arcModules = import.meta.glob<Scene[] | Scene>("../archive/scenes/**/*.json", {
+  eager: true,
+  import: "default"
+});
+
+function collectScenes(modules: Record<string, Scene[] | Scene>): Scene[] {
+  return Object.values(modules)
+    .flatMap((entry) => (Array.isArray(entry) ? entry : [entry]))
+    .filter((scene): scene is Scene => Boolean(scene && typeof scene.id === "string" && Array.isArray(scene.messages)));
+}
+
+const scenes: Scene[] = [...collectScenes(srcModules), ...collectScenes(arcModules)];
+
+function getScene(id: string) {
+  return scenes.find((s) => s.id === id);
+}
+
 type DisplayedMessage = {
   key: string;
   type: "bubble" | "status" | "deleted" | "timer";
@@ -64,7 +97,11 @@ export default function App() {
   const [sceneId, setSceneId] = React.useState<string>("ch1.splash");
   const [cursor, setCursor] = React.useState<number>(0);
   const [log, setLog] = React.useState<DisplayedMessage[]>([]);
+
+  const [activeChoices, setActiveChoices] = React.useState<ChoiceNode[] | null>(null);
+
   const [choices, setChoices] = React.useState<ChoiceNode[]>([]);
+
   const [typing, setTyping] = React.useState<TypingState>(null);
   const [timer, setTimer] = React.useState<TimerState | null>(null);
 
@@ -108,6 +145,7 @@ export default function App() {
     (nextId: string) => {
       clearTimers();
       processedRef.current = new Set();
+      setActiveChoices(null);
       setChoices([]);
       setTyping(null);
       setTimer(null);
@@ -122,6 +160,7 @@ export default function App() {
   }, []);
 
   React.useEffect(() => {
+    const scene = getScene(sceneId);
     const scene = SCENE_MAP.get(sceneId);
     if (!scene) return;
     if (cursor >= scene.messages.length) return;
@@ -227,7 +266,11 @@ export default function App() {
     }
 
     if (message.choices?.length) {
+
+      setActiveChoices(message.choices as ChoiceNode[]);
+
       setChoices(message.choices as ChoiceNode[]);
+
       return;
     }
 
@@ -244,7 +287,11 @@ export default function App() {
     (choice: ChoiceNode) => {
       handleAV(choice);
       playSfx("message_out", 0.6);
+
+      setActiveChoices(null);
+
       setChoices([]);
+
       appendMessage({
         key: `${sceneId}-choice-${choice.id}-${Date.now()}`,
         type: "bubble",
@@ -341,6 +388,23 @@ export default function App() {
                 </div>
               );
             }
+
+            return <SystemMsg key={item.key} text={text} />;
+          })}
+          {typing && <Typing text={`${typing.who ? typing.who + " " : ""}${t("ui.typing")}`} />}
+        </main>
+        <footer className="p-4 border-t border-white/10 bg-slate-900/70">
+          {activeChoices ? (
+            <Choices
+              items={activeChoices}
+              onPick={onPick}
+              label={(id, fallback) => (id ? t(id) : fallback ?? "")}
+            />
+          ) : (
+            <div className="text-center text-xs opacity-70">Глава 1–10 демо</div>
+          )}
+        </footer>
+
             return (
               <div
                 key={item.key}
@@ -355,6 +419,7 @@ export default function App() {
           {typing && <Typing text={`${typing.who ? typing.who + " " : ""}${t("ui.typing")}`} />}
           {choices.length > 0 && <Choices items={choices} onPick={onPick} label={label} />}
         </main>
+
       </div>
       <Sidebar sceneId={sceneId} />
     </div>
