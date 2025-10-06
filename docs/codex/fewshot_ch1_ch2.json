@@ -1,0 +1,21 @@
+[
+  {
+    "id": "ch1.sample_intro",
+    "participants": ["Alex", "Sam"],
+    "messages": [
+      { "sys": "status", "textId": "ui.title", "sfx": { "on": "checkpoint" }, "anim": { "name": "fadeIn", "durationMs": 400 } },
+      { "sys": "typing", "who": "Sam", "ms": 900, "sfx": { "on": "typing_start" }, "anim": { "name": "pulse", "durationMs": 900 } },
+      { "from": "Sam", "textId": "ch1.sam_1", "sfx": { "on": "message_in" }, "anim": { "name": "fadeIn", "durationMs": 240 } },
+      { "from": "Alex", "choices": [ { "id": "ask", "labelId": "ch1.choice.askWho", "goto": "ch2.sample_branch" } ], "sfx": { "on": "choice_show" } }
+    ]
+  },
+  {
+    "id": "ch2.sample_branch",
+    "participants": ["Alex", "Orion"],
+    "messages": [
+      { "sys": "status", "textId": "ch2.orion_status", "sfx": { "on": "checkpoint" }, "anim": { "name": "pulse", "durationMs": 300 } },
+      { "sys": "typing", "who": "Orion", "ms": 1100, "sfx": { "on": "typing_start" }, "anim": { "name": "pulse", "durationMs": 1100 } },
+      { "from": "Orion", "textId": "ch2.orion_reply_honest", "sfx": { "on": "message_in" }, "anim": { "name": "fadeIn", "durationMs": 220 }, "effects": { "trust.Orion": 1 } }
+    ]
+  }
+]
