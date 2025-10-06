@@ -1,0 +1,180 @@
+[
+  {
+    "id": "ch2.entry",
+    "participants": ["Alex", "Orion", "System"],
+    "messages": [
+      {
+        "sys": "status",
+        "textId": "ch2.orion_status",
+        "sfx": { "on": "message_in", "vol": 0.8 },
+        "anim": { "name": "fadeIn", "durationMs": 280 }
+      },
+      {
+        "from": "Alex",
+        "choices": [
+          {
+            "id": "wait",
+            "labelId": "ch2.choice.wait",
+            "goto": "ch2.waitHold",
+            "effects": { "time.clock": "+5" },
+            "sfx": { "on": "choice_show" }
+          },
+          {
+            "id": "press",
+            "labelId": "ch2.choice.press",
+            "goto": "ch2.pressPing",
+            "effects": { "trust.Orion": -2 },
+            "sfx": { "on": "choice_show" }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "ch2.waitHold",
+    "participants": ["Alex", "Orion"],
+    "messages": [
+      {
+        "sys": "timer",
+        "timerMs": 20000,
+        "sfx": { "on": "timer_start", "vol": 0.7 },
+        "onExpire": {
+          "goto": "ch2.waitReply",
+          "effects": { "time.clock": "+5" }
+        }
+      },
+      {
+        "sys": "typing",
+        "who": "Orion",
+        "ms": 1200,
+        "sfx": { "on": "typing_start", "vol": 0.6 }
+      }
+    ]
+  },
+  {
+    "id": "ch2.waitReply",
+    "participants": ["Alex", "Orion"],
+    "messages": [
+      {
+        "sys": "typing",
+        "who": "Orion",
+        "ms": 900,
+        "sfx": { "on": "typing_start" }
+      },
+      {
+        "from": "Orion",
+        "textId": "ch2.orion_reply_honest",
+        "effects": { "trust.Orion": 3 },
+        "sfx": { "on": "message_in" },
+        "anim": { "name": "fadeIn", "durationMs": 260 }
+      },
+      {
+        "from": "Alex",
+        "choices": [
+          {
+            "id": "accept",
+            "labelId": "ch2.choice.wait",
+            "goto": "ch2.bridge",
+            "effects": { "trust.Orion": 2 },
+            "sfx": { "on": "choice_show" }
+          },
+          {
+            "id": "push",
+            "labelId": "ch2.choice.press",
+            "goto": "ch2.pressSilence",
+            "effects": { "trust.Orion": -1 },
+            "sfx": { "on": "choice_show" }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "ch2.pressPing",
+    "participants": ["Alex", "Orion"],
+    "messages": [
+      {
+        "sys": "typing",
+        "who": "Orion",
+        "ms": 700,
+        "sfx": { "on": "typing_start" }
+      },
+      {
+        "from": "Orion",
+        "textId": "ch2.orion_reply_deflect",
+        "effects": { "trust.Orion": -2 },
+        "sfx": { "on": "message_in" },
+        "anim": { "name": "fadeIn", "durationMs": 220 }
+      },
+      {
+        "from": "Alex",
+        "choices": [
+          {
+            "id": "pressAgain",
+            "labelId": "ch2.choice.press",
+            "goto": "ch2.pressSilence",
+            "effects": { "trust.Orion": -2 },
+            "sfx": { "on": "choice_show" }
+          },
+          {
+            "id": "backOff",
+            "labelId": "ch2.choice.wait",
+            "goto": "ch2.waitHold",
+            "effects": { "time.clock": "+3" },
+            "sfx": { "on": "choice_show" }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "ch2.pressSilence",
+    "participants": ["Alex", "Orion"],
+    "messages": [
+      {
+        "sys": "status",
+        "textId": "ch2.orion_status",
+        "sfx": { "on": "message_in", "vol": 0.6 },
+        "anim": { "name": "fadeIn", "durationMs": 200 }
+      },
+      {
+        "sys": "timer",
+        "timerMs": 15000,
+        "sfx": { "on": "timer_start" },
+        "onExpire": {
+          "goto": "ch2.bridge",
+          "effects": { "trust.Orion": -1, "time.clock": "+4" }
+        }
+      }
+    ]
+  },
+  {
+    "id": "ch2.bridge",
+    "participants": ["Alex", "System", "Mira"],
+    "messages": [
+      {
+        "sys": "addContact",
+        "who": "Mira",
+        "sfx": { "on": "checkpoint", "vol": 0.9 },
+        "haptics": "medium"
+      },
+      {
+        "from": "System",
+        "textId": "ch2.mira_ping",
+        "sfx": { "on": "message_in" },
+        "anim": { "name": "fadeIn", "durationMs": 240 }
+      },
+      {
+        "from": "Alex",
+        "choices": [
+          {
+            "id": "toMira",
+            "labelId": "ui.next",
+            "goto": "ch3.entry",
+            "sfx": { "on": "choice_show" }
+          }
+        ]
+      }
+    ]
+  }
+]
