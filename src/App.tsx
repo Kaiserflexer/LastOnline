@@ -7,7 +7,6 @@ import SystemMsg from "@/components/SystemMsg";
 import { applyEffects, handleAV, t } from "@/utils/parser";
 import { useGame } from "@/store/state";
 import { playSfx } from "@/utils/sfx";
-
 import { applyEffects, handleAV, t } from "@/utils/parser";
 import { useGame } from "@/store/state";
 import ch1 from "@/scenes/ch1_intro.json";
@@ -38,7 +37,6 @@ type SceneMessage = {
   sfx?: { on?: string; vol?: number };
   haptics?: "light" | "medium" | "heavy";
 };
-
 
 type Scene = {
   id: string;
@@ -97,11 +95,9 @@ export default function App() {
   const [sceneId, setSceneId] = React.useState<string>("ch1.splash");
   const [cursor, setCursor] = React.useState<number>(0);
   const [log, setLog] = React.useState<DisplayedMessage[]>([]);
-
   const [activeChoices, setActiveChoices] = React.useState<ChoiceNode[] | null>(null);
-
+  const [activeChoices, setActiveChoices] = React.useState<ChoiceNode[] | null>(null);
   const [choices, setChoices] = React.useState<ChoiceNode[]>([]);
-
   const [typing, setTyping] = React.useState<TypingState>(null);
   const [timer, setTimer] = React.useState<TimerState | null>(null);
 
@@ -223,11 +219,26 @@ export default function App() {
       return;
     }
 
+    if (message.sys === "status") {
+      if (message.textId !== "ui.title") {
+        appendMessage({
+          key,
+          type: "status",
+          textId: message.textId,
+          anim: message.anim?.name
+        });
+      }
+      queueNext(250);
+      return;
+    }
+
+    if (message.sys === "addContact") {
     if (message.sys === "status" || message.sys === "addContact") {
       appendMessage({
         key,
         type: "status",
         textId: message.textId,
+        content: `+ ${message.who ?? ""}`,
         content: message.sys === "addContact" ? `+ ${message.who ?? ""}` : undefined,
         anim: message.anim?.name
       });
@@ -256,6 +267,8 @@ export default function App() {
         textId: message.textId,
         anim: message.anim?.name
       });
+    } else if (message.textId && message.textId !== "ui.title") {
+
     } else if (message.textId) {
       appendMessage({
         key,
@@ -269,7 +282,10 @@ export default function App() {
 
       setActiveChoices(message.choices as ChoiceNode[]);
 
+      setActiveChoices(message.choices as ChoiceNode[]);
+
       setChoices(message.choices as ChoiceNode[]);
+
 
       return;
     }
@@ -287,10 +303,10 @@ export default function App() {
     (choice: ChoiceNode) => {
       handleAV(choice);
       playSfx("message_out", 0.6);
-
       setActiveChoices(null);
-
+      setActiveChoices(null);
       setChoices([]);
+
 
       appendMessage({
         key: `${sceneId}-choice-${choice.id}-${Date.now()}`,
