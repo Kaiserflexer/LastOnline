@@ -1,23 +1,64 @@
-# Last Online / Останній раз онлайн
+# Останній раз онлайн — Seen-style чат-новелла
 
-"Last Online" ("Останній раз онлайн") is a bilingual neo-noir chat novel told through an interactive messenger UI. This repository tracks the narrative structure, branching logic, audiovisual guidelines, and implementation notes for the project.
+Демо-проект інтерактивної чат-новели у стилі Seen: гіллястий сценарій, звукові та тактильні підказки, вибір гравця впливає на довіру та таймери.
 
-## Repository contents
+## Стек
+- [Vite](https://vitejs.dev/) + React + TypeScript
+- Zustand для ігрового стану
+- Web Audio API для процедурних звуків та `navigator.vibrate`
+- Tailwind CSS для стилю інтерфейсу
+- AJV для валідації сцен за схемою
 
-- `docs/` – extended design documentation that captures the overall game concept, mechanics, and integration requirements.
-- `data/scenes/` – structured JSON scene data that the runtime parser can consume. Currently includes the full playable flow for Chapter 1.
-- `LICENSE` – GPL-3.0 license governing the project.
+## Запуск
+```bash
+npm install
+npm run dev
+```
+Після старту застосунок доступний за адресою, яку покаже Vite (звичайно `http://localhost:5173`).
 
-## Quick start
+## Как работать с Codex
+1. Прочитайте `docs/codex/system_prompt.txt` и `docs/codex/developer_prompt.txt`, чтобы понимать ограничения формата (только JSON-массив, разрешённые поля, ограничения по sfx/anim/haptics).
+2. Используйте примеры из `docs/codex/fewshot_ch1_ch2.json` и конкретные задачи из `docs/codex/user_prompts.md`, чтобы подбирать нужную структуру сцен.
+3. После генерации сцены прогоните ответ через `scripts/ensureJsonArray.ts` (или вызовите функцию из своего пайплайна) — она отрежет «болтовню» до чистого JSON.
+4. Сохраните результат в `src/scenes/` или `archive/scenes/` (для неактивных глав).
+5. Запустите проверку схему AJV:
+   ```bash
+   npm run validate:scenes
+   ```
+   Скрипт `scripts/validateScenes.ts` пройдётся по всім файлам, імпортує `docs/codex/schema-min.json` і покаже помилки, якщо хтось додав заборонене поле або пропустив обов'язкове.
 
-1. Review `docs/design_overview.md` for the complete scenario outline, UI principles, and mechanic specifications.
-2. Load `data/scenes/ch1_intro.json` into the narrative engine or prototype renderer to experience Chapter 1.
-3. Implement parsers, UI components, and mini-games following the integration checklist in the documentation.
+## Структура
+```
+last-online/
+  public/           # favicon та інші статичні активи
+  src/
+    components/     # бульбашки, варіанти вибору, сайдбар стану
+    scenes/         # JSON-глава 1 та глави 2–3
+    i18n/           # uk/ru словники (виключно textId/labelId)
+    store/          # Zustand-сховище з довірою/флагами/часом
+    utils/          # парсер ефектів, мапа SFX
+  docs/codex/       # промпти для генерації сцен + JSON-схема
+  scripts/          # утиліти ensureJsonArray та validateScenes
+  archive/          # зберігаємо глави 4–10, які чекають на ревізію
+```
 
-## Localization
+## Як додавати нові сцени
+1. Підготуйте промпт за шаблонами з `docs/codex/`. Основні правила — тільки JSON-масив, дозволені поля й textId з i18n.
+2. Запустіть ваш генератор (наприклад, через Codex) і обріжте відповідь через `ensureJsonArray` (можна використати однойменну функцію).
+3. Додайте новий файл у `src/scenes/` та пропишіть перехід з попередніх вузлів.
+4. Синхронізуйте локалізації: усі `textId`/`labelId` мають існувати в `src/i18n/*.json`.
+5. Запустіть перевірку схемою:
+   ```bash
+   npm run validate:scenes
+   ```
+   Скрипт пройде по всіх JSON у `src/scenes/` і виведе помилки AJV, якщо структура некоректна.
 
-All dialogue text is referenced by localization keys (`textId`, `labelId`). Provide actual localized strings in external dictionaries (e.g., `i18n/uk.json`, `i18n/ru.json`) according to the key map described in the documentation.
+### Звуки
+Бінарні файли не потрібні. SFX генеруються процедурно через Web Audio API (див. `src/utils/sfx.ts`). Якщо пізніше захочете mp3 — просто підключіть власні файли і замініть реалізацію `playSfx`.
 
-## Contributing
+## Карта глав
+- **Глава 1** — знайомство з механіками, видалене повідомлення Сема, підключення Міри.
+- **Глава 2** — зіткнення з Оріоном, перші наслідки вибору підходу.
+- **Глава 3** — розмова з Мірою (емпатія vs тиск) і вихід до головоломки глави 4.
 
-Please open a pull request for any narrative, UI, or engine changes. Ensure new branches adhere to the documented trust/flag/time variable conventions and that any added audiovisual cues use existing naming patterns when possible.
+Подальші глави можна генерувати за описаними промптами, дотримуючись схеми та i18n.

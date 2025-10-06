@@ -1,0 +1,119 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["id", "participants", "messages"],
+    "properties": {
+      "id": { "type": "string", "pattern": "^ch[0-9]+\\.[a-z0-9]+(\\.[a-z0-9]+)*$" },
+      "participants": {
+        "type": "array",
+        "items": { "type": "string" },
+        "minItems": 1
+      },
+      "messages": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "from": { "type": "string" },
+            "textId": { "type": "string" },
+            "choices": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["id", "goto"],
+                "properties": {
+                  "id": { "type": "string" },
+                  "labelId": { "type": "string" },
+                  "goto": { "type": "string" },
+                  "effects": { "type": "object" },
+                  "sfx": {
+                    "type": "object",
+                    "properties": {
+                      "on": { "type": "string" },
+                      "vol": { "type": "number" }
+                    },
+                    "additionalProperties": false
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "sys": { "type": "string", "enum": ["typing", "deleted", "status", "timer", "addContact"] },
+            "who": { "type": "string" },
+            "ms": { "type": "integer", "minimum": 0 },
+            "timerMs": { "type": "integer", "minimum": 0 },
+            "onExpire": {
+              "type": "object",
+              "required": ["goto"],
+              "properties": {
+                "goto": { "type": "string" },
+                "effects": { "type": "object" }
+              },
+              "additionalProperties": false
+            },
+            "effects": { "type": "object" },
+            "media": {
+              "type": "object",
+              "required": ["kind", "src"],
+              "properties": {
+                "kind": { "type": "string" },
+                "src": { "type": "string" },
+                "captionId": { "type": "string" }
+              },
+              "additionalProperties": false
+            },
+            "miniGame": {
+              "type": "object",
+              "required": ["kind", "id", "onSuccess", "onFail"],
+              "properties": {
+                "kind": { "type": "string" },
+                "id": { "type": "string" },
+                "params": { "type": "object" },
+                "onSuccess": {
+                  "type": "object",
+                  "required": ["goto"],
+                  "properties": {
+                    "goto": { "type": "string" },
+                    "effects": { "type": "object" }
+                  },
+                  "additionalProperties": false
+                },
+                "onFail": {
+                  "type": "object",
+                  "required": ["goto"],
+                  "properties": {
+                    "goto": { "type": "string" },
+                    "effects": { "type": "object" }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false
+            },
+            "sfx": {
+              "type": "object",
+              "properties": {
+                "on": { "type": "string" },
+                "vol": { "type": "number" }
+              },
+              "additionalProperties": false
+            },
+            "anim": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "durationMs": { "type": "integer" }
+              },
+              "additionalProperties": false
+            },
+            "haptics": { "type": "string", "enum": ["light", "medium", "heavy"] }
+          }
+        }
+      }
+    },
+    "additionalProperties": false
+  }
+}
