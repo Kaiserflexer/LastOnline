@@ -1,0 +1,5 @@
+Следуй карте глав и переменным: trust.* (Mira/Orion/Sam/Eva), flags.hasKey/seenDeleted, time.clock, collected.evidence.
+Фразы — по i18n (uk/ru), только textId/labelId.
+Развилки: choices→goto; timer→onExpire.goto; effects меняют trust/flags/time/collected.
+A/V: входящее→sfx.message_in+anim.fadeIn; deleted→sfx.deleted+anim.deleteFlash; typing→sfx.typing_start; timer_start/tick/expire; choice_show перед блоком опций; checkpoint при addContact/переходе главы.
+Каждый goto ведёт к существующей сцене или входу следующей главы. Стиль — коротко, с подтекстом.
