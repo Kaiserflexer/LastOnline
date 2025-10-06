@@ -8,6 +8,21 @@ import { applyEffects, handleAV, t } from "@/utils/parser";
 import { useGame } from "@/store/state";
 import { playSfx } from "@/utils/sfx";
 
+import { applyEffects, handleAV, t } from "@/utils/parser";
+import { useGame } from "@/store/state";
+import ch1 from "@/scenes/ch1_intro.json";
+import ch23 from "@/scenes/ch2_3.json";
+import { playSfx } from "@/utils/sfx";
+
+const SCENES = [...(ch1 as Scene[]), ...(ch23 as Scene[])];
+const SCENE_MAP = new Map(SCENES.map((scene) => [scene.id, scene]));
+
+type Scene = {
+  id: string;
+  participants: string[];
+  messages: SceneMessage[];
+};
+
 type SceneMessage = {
   from?: string;
   textId?: string;
@@ -23,6 +38,7 @@ type SceneMessage = {
   sfx?: { on?: string; vol?: number };
   haptics?: "light" | "medium" | "heavy";
 };
+
 
 type Scene = {
   id: string;
@@ -81,7 +97,11 @@ export default function App() {
   const [sceneId, setSceneId] = React.useState<string>("ch1.splash");
   const [cursor, setCursor] = React.useState<number>(0);
   const [log, setLog] = React.useState<DisplayedMessage[]>([]);
+
   const [activeChoices, setActiveChoices] = React.useState<ChoiceNode[] | null>(null);
+
+  const [choices, setChoices] = React.useState<ChoiceNode[]>([]);
+
   const [typing, setTyping] = React.useState<TypingState>(null);
   const [timer, setTimer] = React.useState<TimerState | null>(null);
 
@@ -126,6 +146,7 @@ export default function App() {
       clearTimers();
       processedRef.current = new Set();
       setActiveChoices(null);
+      setChoices([]);
       setTyping(null);
       setTimer(null);
       setSceneId(nextId);
@@ -140,6 +161,7 @@ export default function App() {
 
   React.useEffect(() => {
     const scene = getScene(sceneId);
+    const scene = SCENE_MAP.get(sceneId);
     if (!scene) return;
     if (cursor >= scene.messages.length) return;
 
@@ -244,7 +266,11 @@ export default function App() {
     }
 
     if (message.choices?.length) {
+
       setActiveChoices(message.choices as ChoiceNode[]);
+
+      setChoices(message.choices as ChoiceNode[]);
+
       return;
     }
 
@@ -261,7 +287,11 @@ export default function App() {
     (choice: ChoiceNode) => {
       handleAV(choice);
       playSfx("message_out", 0.6);
+
       setActiveChoices(null);
+
+      setChoices([]);
+
       appendMessage({
         key: `${sceneId}-choice-${choice.id}-${Date.now()}`,
         type: "bubble",
@@ -282,6 +312,11 @@ export default function App() {
   const setLanguage = React.useCallback((next: "uk" | "ru") => {
     applyEffects({ lang: next });
     playSfx("choice_show", 0.4);
+  }, []);
+
+  const label = React.useCallback((id?: string, fallback?: string) => {
+    const text = t(id);
+    return text || id || fallback || "";
   }, []);
 
   return (
@@ -353,6 +388,7 @@ export default function App() {
                 </div>
               );
             }
+
             return <SystemMsg key={item.key} text={text} />;
           })}
           {typing && <Typing text={`${typing.who ? typing.who + " " : ""}${t("ui.typing")}`} />}
@@ -368,6 +404,22 @@ export default function App() {
             <div className="text-center text-xs opacity-70">Глава 1–10 демо</div>
           )}
         </footer>
+
+            return (
+              <div
+                key={item.key}
+                className={`w-full flex justify-center text-xs text-slate-300 ${item.anim ?? "fadeIn"}`}
+              >
+                <div className="px-3 py-1 rounded-full border border-slate-700/70 bg-slate-800/40">
+                  {text}
+                </div>
+              </div>
+            );
+          })}
+          {typing && <Typing text={`${typing.who ? typing.who + " " : ""}${t("ui.typing")}`} />}
+          {choices.length > 0 && <Choices items={choices} onPick={onPick} label={label} />}
+        </main>
+
       </div>
       <Sidebar sceneId={sceneId} />
     </div>
