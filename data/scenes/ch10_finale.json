@@ -1,0 +1,72 @@
+[
+  {
+    "id": "ch10.setup",
+    "participants": ["Alex", "Mira", "Orion"],
+    "messages": [
+      { "sys": "status", "textId": "ch10.setup_status", "sfx": { "on": "checkpoint", "vol": 0.95 }, "anim": { "name": "fadeIn", "durationMs": 340 } },
+      { "from": "Mira", "textId": "ch10.mira_setup", "sfx": { "on": "message_in" } },
+      { "from": "Alex", "choices": [ { "id": "balance", "labelId": "ui.next", "goto": "ch10.balance", "sfx": { "on": "choice_show" } } ] }
+    ]
+  },
+  {
+    "id": "ch10.balance",
+    "participants": ["Alex", "Orion"],
+    "messages": [
+      { "sys": "typing", "who": "Orion", "ms": 1100, "sfx": { "on": "typing_start" } },
+      { "from": "Orion", "textId": "ch10.orion_balance", "sfx": { "on": "message_in" } },
+      { "from": "Alex", "choices": [ { "id": "evaluate", "labelId": "ui.next", "goto": "ch10.evaluate", "sfx": { "on": "choice_show" }, "haptics": "medium" } ] }
+    ]
+  },
+  {
+    "id": "ch10.evaluate",
+    "participants": ["Alex", "System"],
+    "messages": [
+      { "sys": "typing", "who": "System", "ms": 800, "sfx": { "on": "typing_start" } },
+      { "from": "System", "textId": "ch10.system_summary", "sfx": { "on": "message_in" } },
+      {
+        "from": "Alex",
+        "choices": [
+          { "id": "good", "labelId": "ch10.choice.good", "goto": "ch10.ending.good", "requires": { "trust.Mira": { ">=": 6 }, "trust.Orion": { ">=": 4 }, "flags.pressRelease": true, "flags.lockerOpened": true }, "sfx": { "on": "choice_confirm" } },
+          { "id": "secret", "labelId": "ch10.choice.secret", "goto": "ch10.ending.secret", "requires": { "trust.Mira": { ">=": 5 }, "flags.hasKey": true, "flags.pressRelease": false }, "sfx": { "on": "choice_confirm" } },
+          { "id": "bittersweet", "labelId": "ch10.choice.bittersweet", "goto": "ch10.ending.bittersweet", "requires": { "trust.Mira": { ">=": 3 } }, "sfx": { "on": "choice_confirm" } },
+          { "id": "bad", "labelId": "ch10.choice.bad", "goto": "ch10.ending.bad", "sfx": { "on": "choice_confirm" } }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "ch10.ending.good",
+    "participants": ["Alex", "Mira", "Orion"],
+    "messages": [
+      { "from": "Mira", "textId": "ch10.good_mira", "sfx": { "on": "message_in", "vol": 0.95 }, "anim": { "name": "fadeIn", "durationMs": 320 } },
+      { "from": "Orion", "textId": "ch10.good_orion", "sfx": { "on": "message_in" } },
+      { "sys": "status", "textId": "ch10.good_outro", "sfx": { "on": "checkpoint" }, "haptics": "soft" }
+    ]
+  },
+  {
+    "id": "ch10.ending.bittersweet",
+    "participants": ["Alex", "Mira", "Orion"],
+    "messages": [
+      { "from": "Mira", "textId": "ch10.bittersweet_mira", "sfx": { "on": "message_in" } },
+      { "from": "Orion", "textId": "ch10.bittersweet_orion", "sfx": { "on": "message_in", "vol": 0.8 } },
+      { "sys": "status", "textId": "ch10.bittersweet_outro", "sfx": { "on": "message_in" } }
+    ]
+  },
+  {
+    "id": "ch10.ending.bad",
+    "participants": ["Alex", "Mira", "Orion"],
+    "messages": [
+      { "from": "Orion", "textId": "ch10.bad_orion", "sfx": { "on": "message_in", "vol": 0.7 }, "anim": { "name": "shake", "durationMs": 240 } },
+      { "from": "Mira", "textId": "ch10.bad_mira", "sfx": { "on": "message_in" } },
+      { "sys": "status", "textId": "ch10.bad_outro", "sfx": { "on": "error" }, "haptics": "heavy" }
+    ]
+  },
+  {
+    "id": "ch10.ending.secret",
+    "participants": ["Alex", "Mira"],
+    "messages": [
+      { "from": "Mira", "textId": "ch10.secret_mira", "sfx": { "on": "message_in", "vol": 0.95 }, "anim": { "name": "fadeIn", "durationMs": 340 } },
+      { "sys": "status", "textId": "ch10.secret_outro", "sfx": { "on": "checkpoint" }, "haptics": "medium" }
+    ]
+  }
+]
